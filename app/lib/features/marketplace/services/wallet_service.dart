@@ -1,0 +1,90 @@
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/dio_client.dart';
+import '../models/purchase_model.dart';
+import '../models/wallet_model.dart';
+import '../../../core/network/api_response.dart';
+
+class WalletService {
+  final _dio = DioClient().dio;
+
+  Future<WalletSummary> fetchSummary() async {
+    final res = await _dio.get(ApiEndpoints.walletSummary);
+    return WalletSummary.fromJson(res.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<List<WalletTransactionModel>> fetchTransactions({int page = 1}) async {
+    final res = await _dio.get(ApiEndpoints.walletTransactions,
+        queryParameters: {'page': page});
+    return parseDataList(res, WalletTransactionModel.fromJson);
+  }
+
+  /// Returns the `payments.Checkout` payload (provider, order_id, amount_minor,
+  /// currency, public_key, client_secret) — same shape as the product
+  /// purchase order, so the Razorpay checkout call is identical.
+  Future<Map<String, dynamic>> createTopupOrder(int amountMinor) async {
+    final res = await _dio.post(ApiEndpoints.walletTopupOrder,
+        data: {'amount_minor': amountMinor});
+    return res.data['data'] as Map<String, dynamic>;
+  }
+
+  Future<void> verifyTopup({
+    required String razorpayOrderId,
+    required String razorpayPaymentId,
+    required String razorpaySignature,
+  }) async {
+    await _dio.post(ApiEndpoints.walletTopupVerify, data: {
+      'provider_order_id': razorpayOrderId,
+      'provider_payment_id': razorpayPaymentId,
+      'provider_signature': razorpaySignature,
+    });
+  }
+
+  Future<PayoutDetailsModel> fetchPayoutDetails() async {
+    final res = await _dio.get(ApiEndpoints.walletPayoutDetails);
+    return PayoutDetailsModel.fromJson(
+        res.data['data'] as Map<String, dynamic>);
+  }
+
+  Future<void> savePayoutDetails({
+    required String upiId,
+    required String bankAccountNumber,
+    required String bankIfsc,
+    required String bankHolderName,
+  }) async {
+    await _dio.put(ApiEndpoints.walletPayoutDetails, data: {
+      'upi_id': upiId,
+      'bank_account_number': bankAccountNumber,
+      'bank_ifsc': bankIfsc,
+      'bank_holder_name': bankHolderName,
+    });
+  }
+
+  Future<void> createWithdrawal({
+    required int amountMinor,
+    required String method,
+  }) async {
+    await _dio.post(ApiEndpoints.walletWithdrawals, data: {
+      'amount_minor': amountMinor,
+      'method': method,
+    });
+  }
+
+  Future<List<WithdrawalModel>> fetchMyWithdrawals() async {
+    final res = await _dio.get(ApiEndpoints.walletWithdrawals);
+    return parseDataList(res, WithdrawalModel.fromJson);
+  }
+
+  Future<int> fetchFeePercent() async {
+    final res = await _dio.get(ApiEndpoints.marketFee);
+    return (res.data['data']['fee_percent'] as num?)?.toInt() ?? 0;
+  }
+
+  /// Buys a product directly from wallet balance. Throws DioException with
+  /// status 400 ("insufficient wallet balance") when the balance is short —
+  /// callers fall back to the Razorpay flow.
+  Future<PurchaseModel> purchaseWithWallet(String productId) async {
+    final res = await _dio
+        .post(ApiEndpoints.marketWalletPurchase, data: {'product_id': productId});
+    return PurchaseModel.fromJson(res.data['data'] as Map<String, dynamic>);
+  }
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscription — MarketKit</title>
+</head>
+<body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center" style="padding:32px 16px;background:#f4f4f4 url('https://example.com/icon-email-bg.jpg') no-repeat center center;background-size:350px auto;">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e0e0e0;max-width:560px;width:100%;">
+
+          <tr>
+            <td style="background:#18181B;padding:22px 32px;text-align:center;">
+              <h1 style="margin:0;color:#4F46E5;font-size:20px;letter-spacing:2px;font-weight:700;font-family:Arial,Helvetica,sans-serif;">MarketKit</h1>
+            </td>
+          </tr>
+          <tr><td><div style="height:3px;background:#4F46E5;"></div></td></tr>
+
+          <tr>
+            <td style="padding:32px 40px 8px;">
+              <h2 style="margin:0 0 4px;font-size:20px;color:#111111;font-family:Arial,Helvetica,sans-serif;">
+                {{if .IsUpgrade}}Plan Upgraded{{else}}Subscription Activated{{end}}
+              </h2>
+              <div style="height:2px;width:40px;background:#4F46E5;margin:10px 0 20px;"></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 40px 36px;">
+              <p style="margin:0 0 14px;font-size:15px;color:#333333;">Dear {{.Name}},</p>
+
+              {{if .IsUpgrade}}
+                <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.7;">
+                  Your plan has been successfully upgraded. Here are the details of your new subscription:
+                </p>
+              {{else}}
+                <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.7;">
+                  Your subscription to <strong>MarketKit</strong> is now active. You have full access to the content included in your plan.
+                </p>
+              {{end}}
+
+              <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eeeeee;margin-bottom:20px;">
+                <tr style="background:#f9f9f9;">
+                  <td style="padding:11px 16px;font-size:13px;color:#888888;width:45%;border-bottom:1px solid #eeeeee;">Plan</td>
+                  <td style="padding:11px 16px;font-size:14px;color:#111111;font-weight:700;text-align:right;border-bottom:1px solid #eeeeee;">{{.PlanName}}</td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 16px;font-size:13px;color:#888888;">Valid Until</td>
+                  <td style="padding:11px 16px;font-size:14px;color:#111111;font-weight:700;text-align:right;">{{.ExpiresAt}}</td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 8px;font-size:14px;color:#555555;font-weight:bold;">Your plan includes:</p>
+              <ul style="margin:0 0 20px;padding-left:20px;">
+                {{range .Features}}<li style="font-size:14px;color:#333333;line-height:1.9;">{{.}}</li>{{end}}
+              </ul>
+
+              <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.7;">
+                Open the <strong>MarketKit</strong> app and start watching your videos today.
+              </p>
+
+              <hr style="border:none;border-top:1px solid #eeeeee;margin:0 0 20px;" />
+
+              <p style="margin:0 0 20px;font-size:13px;color:#888888;line-height:1.7;border-left:3px solid #4F46E5;padding-left:12px;">
+                <strong>Please Note:</strong> This plan has been purchased on your own responsibility. Refunds will only be processed by the MarketKit team in cases of verified technical issues on our platform. Our team is not responsible for any other circumstances.
+              </p>
+
+              <p style="margin:0;font-size:15px;color:#333333;">Regards,<br /><strong>MarketKit Team</strong></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:#f9f9f9;border-top:1px solid #eeeeee;padding:16px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#888888;line-height:1.6;">&copy; {{.Year}} MarketKit. All rights reserved.<br />This is an automated message, please do not reply.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
